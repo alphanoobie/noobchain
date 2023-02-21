@@ -70,7 +70,15 @@ def mine():
 
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
-    return "NEW TXN"
+    values = request.get_json()
+    required = ['sender', 'recipient', 'amount']
+    if not all(k in values for k in required):
+        return 'Missing Values', 400
+
+    index = blockchain.new_transaction(values['sender'], values['receipient'], values['amount'])
+    response = {'message': f'Transaction will be added to Block {index}'}
+
+    return jsonify(response), 201
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
